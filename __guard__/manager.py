@@ -1,4 +1,4 @@
-#!/Users/aviaryan/miniconda3/bin/python
+#!/Python36_64/python
 
 '''
 Sublime Notebook Manager
@@ -6,7 +6,7 @@ v0.2.1
 '''
 
 import os
-from sys import exit
+import sys
 from cryptlib import get_file_list, encode, update_file, get_key, decode
 
 FLAG = 'FLAG_FILE'
@@ -20,6 +20,10 @@ def createFlagFile():
 
 if __name__ == '__main__':
 
+	if sys.version_info < (3, 4):
+		sys.stderr.write("You need python 3.4 or later to run this script\n")
+		sys.exit(1)
+
 	if not os.path.exists(FLAG):
 		# new case
 		# or decrypted state in power fail
@@ -29,7 +33,7 @@ if __name__ == '__main__':
 		key2 = get_key()
 		if key != key2:
 			print('Keys don\'t match, exiting')
-			exit(1)
+			sys.exit(1)
 		update_file(encode, get_file_list(), key2)
 		createFlagFile()
 	else:
@@ -39,7 +43,7 @@ if __name__ == '__main__':
 		failStatus = update_file(decode, get_file_list(), key)
 		if failStatus:
 			print('You entered wrong key. FO')
-			exit(2)
+			sys.exit(2)
 		os.remove(FLAG)
 		# decoded, wait to close
 		print('Notes have been decrypted')

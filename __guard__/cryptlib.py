@@ -1,9 +1,11 @@
 import base64
 from getpass import getpass
+import json
 import os
 
 EXTRA_STR = 'ENCo0D#DT{xTCh$cKe>'
 ENCODED_IDF = '=*=EnC0d3dH3aDer==*'
+PROTECT_SETTINGS = os.path.dirname(__file__) + '/notebook-settings.json'
 
 # Vigenere's Cipher: http://stackoverflow.com/a/38223403
 
@@ -41,12 +43,25 @@ def decode(key, enc):
 
 
 def get_file_list():
+    if not os.path.isfile(PROTECT_SETTINGS):
+        print('Settings file not exists.')
+        return None
+    with open(PROTECT_SETTINGS) as json_file:
+        json_data = json.load(json_file)
+        PROTECT_DIR = json_data['PROTECT_DIR']
+        PROTECT_EXT = json_data['PROTECT_EXT']
     listFiles = []
     for dirpath, dnames, fnames in os.walk('./'):
-        if dirpath.endswith('/public') or (dirpath.find('/public/') > -1):  # skip public notes
+        path_split = os.path.split(dirpath[2:])
+        # skip if file is in the "public" dir
+        if set(path_split).intersection(['public']):  # skip public notes
             continue
+        # skip if file is not in protection range : PROTECT_DIR
+        if not set(path_split).intersection(PROTECT_DIR):
+            continue
+        # skip if file ext is not in PROTECT_EXT
         for f in fnames:
-            if not (f.endswith('.txt') or f.endswith('.md')):
+            if not (f.endswith(tuple(PROTECT_EXT))):
                 continue
             listFiles.append(os.path.join(dirpath, f))
     return listFiles

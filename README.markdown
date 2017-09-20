@@ -23,7 +23,7 @@ https://medium.com/aviaryan/sublime-notebook-an-attempt-to-use-sublime-text-as-m
 
 ### FAQ
 
-* Only *.txt and *.md files are detected as notes.
+* Only `*.txt`, `*.md` and `*.notes` files are detected as notes.
 * You don't need to be in decrypted state to create a new note. Even when in encrypted state, you can create a note. When manager.py starts decrypting the notes, 
 this new file will be ignored and will be encrypted when it's time to encrypt. 
 
